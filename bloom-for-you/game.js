@@ -233,7 +233,7 @@ class LoveGame {
 
     const dir = Math.random() > 0.5 ? 1 : -1;
     const startX = dir === 1 ? -120 : this.virtualWidth + 120;
-    const speed = 1.3 + Math.random() * 0.8;
+    const speed = 0.5 + Math.random() * 0.4;
     const vx = dir * speed;
     const startY = 80 + Math.random() * (this.virtualHeight - 160);
 
@@ -289,13 +289,13 @@ class LoveGame {
           if (!this.isPlaying) return;
           const phraseA = this.getRandomPhrase();
           agent.bubbleText = phraseA;
-          agent.bubbleTimer = 120;
+          agent.bubbleTimer = 240;
 
           setTimeout(() => {
             if (!this.isPlaying) return;
             const phraseB = this.getRandomResponsePhrase(phraseA);
             follower.bubbleText = phraseB;
-            follower.bubbleTimer = 120;
+            follower.bubbleTimer = 240;
           }, 1200);
 
         }, 1500);
@@ -515,7 +515,7 @@ class LoveGame {
       const distToPlayer = Math.hypot((this.player.x + pw/2) - agent.x, (this.player.y + ph/2) - agent.y);
       if (distToPlayer < 75 && agent.bubbleText === null) {
         agent.bubbleText = this.getRandomPhrase();
-        agent.bubbleTimer = 120; // 2 seconds
+        agent.bubbleTimer = 240; // 4 seconds
         if (window.effects) window.effects.playTypingSound();
       }
 
@@ -534,12 +534,12 @@ class LoveGame {
           if (distToOther < 65) {
             // Trigger dynamic conversation
             agent.bubbleText = this.getRandomPhrase();
-            agent.bubbleTimer = 120;
+            agent.bubbleTimer = 240;
             
             setTimeout(() => {
               if (other && this.runningAgents.includes(other)) {
                 other.bubbleText = this.getRandomResponsePhrase(agent.bubbleText);
-                other.bubbleTimer = 120;
+                other.bubbleTimer = 240;
               }
             }, 800);
           }
