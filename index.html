@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hành Trình Trái Tim ❤️</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Twinkling Starfield Background -->
+  <div class="stars"></div>
+
+  <!-- Background overlay for full-screen particles (confetti, fireworks, hearts) -->
+  <canvas id="effects-canvas"></canvas>
+
+  <!-- Navigation Screen Container -->
+  <div class="screen-container">
+
+    <!-- PHẦN 1: Màn hình mở đầu -->
+    <div id="screen-welcome" class="screen active">
+      <h1 id="welcome-text">Làm tí game đê</h1>
+      
+      <!-- Character Skin Selector -->
+      <div class="skin-selector">
+        <button id="btn-prev-skin" class="btn-arrow">&larr;</button>
+        <div class="skin-preview-box">
+          <canvas id="skin-preview-canvas" width="80" height="90"></canvas>
+          <span id="skin-name">Cô gái Chibi</span>
+        </div>
+        <button id="btn-next-skin" class="btn-arrow">&rarr;</button>
+      </div>
+
+      <button id="btn-start" class="btn-premium">
+        Bắt đầu hành trình <span style="font-size: 1.25rem;">❤️</span>
+      </button>
+    </div>
+
+    <!-- PHẦN 2 & 3: Mini Game & HUD -->
+    <div id="screen-game" class="screen">
+      <div class="game-hud">
+        <div class="game-score-box">
+          <span class="heart-hud-icon">❤️</span>
+          <span id="score-text" class="score-text">0 / 10</span>
+        </div>
+        <div class="game-instructions">
+          <span>🎮</span>
+          <span id="control-info">Dùng WASD/Mũi tên hoặc chạm kéo màn hình</span>
+        </div>
+      </div>
+      <canvas id="game-canvas"></canvas>
+
+      <!-- Floating Virtual Joystick for Mobile Touch Controls -->
+      <div id="joystick-container" class="joystick-container">
+        <div id="joystick-base">
+          <div id="joystick-knob"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHẦN 4: Animation chiến thắng (Overlay) -->
+    <div id="screen-victory" class="screen">
+      <div class="victory-content">
+        <h1 class="victory-title">CONGRATULATIONS</h1>
+        <p class="victory-subtitle">Pthuy đã mở khóa bí mật ❤️</p>
+        <button id="btn-open-letter" class="btn-premium" style="margin: 0 auto;">
+          Mở lá thư bí mật ✉️
+        </button>
+      </div>
+    </div>
+
+    <!-- PHẦN 5 & 6: Lá thư & Hiệu ứng đánh máy -->
+    <div id="screen-letter" class="screen">
+      
+      <!-- Interactive CSS 3D Envelope -->
+      <div id="love-envelope" class="envelope-wrapper">
+        <div class="envelope-inner"></div>
+        <div class="envelope-flap"></div>
+        <div class="envelope-letter">
+          <span style="font-size: 1.8rem; animation: pulseHeart 1s infinite alternate; margin-bottom: 5px;">💌</span>
+          <span style="font-size: 0.85rem; font-weight: bold; color: #4a376e;">Dành riêng cho pthuy</span>
+        </div>
+        <div class="envelope-front"></div>
+        <div class="heart-sticker" id="envelope-sticker"></div>
+      </div>
+
+      <!-- Real Confession Letter Card (Fades in and slides up after envelope opens) -->
+      <div id="letter-card" class="letter-box">
+        <div id="letter-content" class="letter-paper"></div>
+        
+        <!-- PHẦN 7: Kết thúc - Các nút lựa chọn -->
+        <div id="letter-choices" class="letter-actions">
+          <button id="btn-agree" class="btn-choice btn-agree">❤️ Đồng ý</button>
+          <button id="btn-think" class="btn-choice btn-think">😊 Để Pthuy suy nghĩ nhó</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Polite Response Modal for "Để em suy nghĩ" -->
+    <div id="think-modal" class="think-modal">
+      <div class="think-content">
+        <p class="think-text">
+          Khom shao khom shaooo ❤️.<br>
+          Mwang chỉ muốn Pthuy biết tình cảm chân thành của Mwang.<br>
+          Dù câu trả lời là gì, Mwang vẫn luôn tôn trọng quyết định của Pthuy.
+        </p>
+        <button id="btn-think-close" class="btn-think-close">Quay lại ❤️</button>
+      </div>
+    </div>
+
+    <!-- Final YAY Screen -->
+    <div id="screen-yay" class="screen">
+      <div class="yay-content">
+        <h1 class="yay-title">YARSSSSSSSSS!</h1>
+        <p class="yay-subtitle">Xin chào người yêu của Mwang nhóoo! ❤️</p>
+        
+        <!-- Romantic Couple SVG Frame (Custom illustration) -->
+        <div class="couple-frame">
+          <svg class="couple-placeholder-svg" viewBox="0 0 24 24">
+            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Load Module Scripts -->
+  <script src="effects.js"></script>
+  <script src="game.js"></script>
+  <script src="typing.js"></script>
+
+  <!-- Connect Screens Navigation and Action Events -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const btnStart = document.getElementById('btn-start');
+      const welcomeScreen = document.getElementById('screen-welcome');
+      const gameScreen = document.getElementById('screen-game');
+      const victoryScreen = document.getElementById('screen-victory');
+      const letterScreen = document.getElementById('screen-letter');
+      const envelope = document.getElementById('love-envelope');
+      const letterCard = document.getElementById('letter-card');
+      const letterChoices = document.getElementById('letter-choices');
+      const btnOpenLetter = document.getElementById('btn-open-letter');
+      
+      const btnAgree = document.getElementById('btn-agree');
+      const btnThink = document.getElementById('btn-think');
+      const thinkModal = document.getElementById('think-modal');
+      const btnThinkClose = document.getElementById('btn-think-close');
+      const yayScreen = document.getElementById('screen-yay');
+
+      // Character Skin Selector elements
+      const btnPrevSkin = document.getElementById('btn-prev-skin');
+      const btnNextSkin = document.getElementById('btn-next-skin');
+      const skinName = document.getElementById('skin-name');
+      const skinCanvas = document.getElementById('skin-preview-canvas');
+      const skinCtx = skinCanvas.getContext('2d');
+      
+      const skins = [
+        { id: 'girl', name: 'Cô gái Chibi' },
+        { id: 'boy', name: 'Chàng trai Chibi' },
+        { id: 'cat', name: 'Mèo Chibi' }
+      ];
+      let currentSkinIndex = 0;
+
+      // Skin Selector Preview Render Loop
+      let previewFrame = 0;
+      function animatePreview() {
+        if (skinCtx) {
+          skinCtx.clearRect(0, 0, skinCanvas.width, skinCanvas.height);
+          previewFrame += 0.07;
+          
+          if (window.drawChibiCharacter) {
+            // Draw character centered on canvas (width 50, height 55)
+            window.drawChibiCharacter(skinCtx, 15, 15, previewFrame, 'down', skins[currentSkinIndex].id, false);
+          } else {
+            // Fallback drawing if game.js not loaded
+            skinCtx.fillStyle = '#ff7597';
+            skinCtx.beginPath();
+            skinCtx.arc(40, 45, 18, 0, Math.PI * 2);
+            skinCtx.fill();
+          }
+        }
+        requestAnimationFrame(animatePreview);
+      }
+      animatePreview();
+
+      btnPrevSkin.addEventListener('click', (e) => {
+        e.stopPropagation();
+        currentSkinIndex = (currentSkinIndex - 1 + skins.length) % skins.length;
+        skinName.innerText = skins[currentSkinIndex].name;
+        if (window.effects) window.effects.playTypingSound(); // cute select tick
+      });
+
+      btnNextSkin.addEventListener('click', (e) => {
+        e.stopPropagation();
+        currentSkinIndex = (currentSkinIndex + 1) % skins.length;
+        skinName.innerText = skins[currentSkinIndex].name;
+        if (window.effects) window.effects.playTypingSound(); // cute select tick
+      });
+
+      // Click Start Button: Zoom effect transition into Mini-game
+      btnStart.addEventListener('click', () => {
+        window.effects.initAudio(); // Initialize audio context on user interaction
+        welcomeScreen.classList.add('camera-zoom-out');
+        
+        setTimeout(() => {
+          welcomeScreen.classList.remove('active', 'camera-zoom-out');
+          gameScreen.classList.add('active');
+          
+          // Apply chosen skin to the game character
+          if (window.loveGame) {
+            window.loveGame.player.skin = skins[currentSkinIndex].id;
+            window.loveGame.start();
+          }
+          
+          // Start upbeat game background music
+          window.effects.startGameMusic();
+        }, 1000);
+      });
+
+      // Virtual Joystick touch tracking logic
+      const joystickContainer = document.getElementById('joystick-container');
+      const joystickKnob = document.getElementById('joystick-knob');
+      
+      let touchId = null;
+      let startX = 0;
+      let startY = 0;
+      const maxLimit = 35; // Maximum pixel displacement of the knob
+
+      gameScreen.addEventListener('touchstart', (e) => {
+        if (!window.loveGame || !window.loveGame.isPlaying || touchId !== null) return;
+        
+        // Exclude top HUD zone (first 90px)
+        const touch = e.changedTouches[0];
+        if (touch.clientY < 90) return;
+
+        touchId = touch.identifier;
+        startX = touch.clientX;
+        startY = touch.clientY;
+
+        // Position floating joystick at touch center
+        joystickContainer.style.left = `${startX - 50}px`;
+        joystickContainer.style.top = `${startY - 50}px`;
+        joystickContainer.style.display = 'block';
+        joystickContainer.style.opacity = '1';
+        
+        joystickKnob.style.transform = 'translate(0px, 0px)';
+      });
+
+      gameScreen.addEventListener('touchmove', (e) => {
+        if (touchId === null) return;
+        
+        let activeTouch = null;
+        for (let i = 0; i < e.touches.length; i++) {
+          if (e.touches[i].identifier === touchId) {
+            activeTouch = e.touches[i];
+            break;
+          }
+        }
+        if (!activeTouch) return;
+
+        const dx = activeTouch.clientX - startX;
+        const dy = activeTouch.clientY - startY;
+        const distance = Math.hypot(dx, dy);
+        const angle = Math.atan2(dy, dx);
+
+        let moveX = dx;
+        let moveY = dy;
+
+        if (distance > maxLimit) {
+          moveX = Math.cos(angle) * maxLimit;
+          moveY = Math.sin(angle) * maxLimit;
+        }
+
+        joystickKnob.style.transform = `translate(${moveX}px, ${moveY}px)`;
+
+        // Normalized velocities (-1 to 1)
+        const normX = moveX / maxLimit;
+        const normY = moveY / maxLimit;
+
+        if (window.loveGame && window.loveGame.isPlaying) {
+          window.loveGame.setMobileVelocity(normX, normY);
+        }
+      });
+
+      const handleTouchEnd = (e) => {
+        if (touchId === null) return;
+        
+        let ended = false;
+        for (let i = 0; i < e.changedTouches.length; i++) {
+          if (e.changedTouches[i].identifier === touchId) {
+            ended = true;
+            break;
+          }
+        }
+        if (!ended && e.type !== 'touchcancel') return;
+
+        touchId = null;
+        joystickContainer.style.opacity = '0';
+        joystickContainer.style.display = 'none';
+
+        if (window.loveGame) {
+          window.loveGame.setMobileVelocity(0, 0);
+        }
+      };
+
+      gameScreen.addEventListener('touchend', handleTouchEnd);
+      gameScreen.addEventListener('touchcancel', handleTouchEnd);
+
+      // Click Open Letter button on Victory screen: transitions into Letter screen
+      btnOpenLetter.addEventListener('click', () => {
+        victoryScreen.classList.remove('active');
+        letterScreen.classList.add('active');
+        window.effects.stop(); // Stop victory particles
+        
+        // Trigger envelope falling visual note or drift
+        envelope.style.transform = 'translateY(-50px) scale(0.9)';
+        setTimeout(() => {
+          envelope.style.transform = '';
+        }, 300);
+      });
+
+      // Envelope open handler (clicking heart sticker)
+      envelope.addEventListener('click', () => {
+        if (envelope.classList.contains('open')) return;
+        envelope.classList.add('open');
+        window.effects.playCollectSound(); // cute sound trigger
+
+        // Wait for envelope open flip transition, then fade envelope out and slide card up
+        setTimeout(() => {
+          envelope.classList.add('fade-out');
+          
+          setTimeout(() => {
+            envelope.style.display = 'none';
+            letterCard.classList.add('slide-up');
+            
+            // Start background music and typing effect
+            setTimeout(() => {
+              window.effects.startBackgroundMusic();
+              if (window.letterTyping) {
+                window.letterTyping.startTyping(() => {
+                  // Typing finished callback: show the choices (buttons)
+                  letterChoices.classList.add('visible');
+                });
+              }
+            }, 500);
+
+          }, 600);
+        }, 1500);
+      });
+
+      // Choice "Đồng ý"
+      btnAgree.addEventListener('click', () => {
+        // Change screen to YAY
+        letterScreen.classList.remove('active');
+        yayScreen.classList.add('active');
+        
+        // Trigger maximum celebratory fireworks, confetti and floating hearts
+        window.effects.triggerConfetti(120);
+        window.effects.triggerHearts(40);
+        window.effects.triggerFireworks(8);
+        
+        // Play final victory chime arpeggio
+        window.effects.playVictorySound();
+        
+        // Launch dynamic ongoing effects loop for final screen
+        let intervalCount = 0;
+        const fireworksInterval = setInterval(() => {
+          if (!yayScreen.classList.contains('active') || intervalCount > 10) {
+            clearInterval(fireworksInterval);
+            return;
+          }
+          window.effects.triggerFireworks(2);
+          window.effects.triggerConfetti(20);
+          intervalCount++;
+        }, 2500);
+      });
+
+      // Choice "Để em suy nghĩ"
+      btnThink.addEventListener('click', () => {
+        thinkModal.classList.add('active');
+      });
+
+      btnThinkClose.addEventListener('click', () => {
+        thinkModal.classList.remove('active');
+      });
+    });
+  </script>
+</body>
+</html>
