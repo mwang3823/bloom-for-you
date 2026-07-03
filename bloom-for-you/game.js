@@ -6,9 +6,18 @@ class LoveGame {
     if (!this.canvas) return;
     this.ctx = this.canvas.getContext('2d');
     
-    // Virtual resolution (remains constant for scale math)
-    this.virtualWidth = 800;
-    this.virtualHeight = 600;
+    // Dynamic virtual resolution matching actual screen aspect ratio
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    if (h > w) {
+      // Mobile portrait: scale to base width 500
+      this.virtualWidth = 500;
+      this.virtualHeight = Math.round(500 * (h / w));
+    } else {
+      // Desktop / Landscape: scale to base height 600
+      this.virtualWidth = Math.round(600 * (w / h));
+      this.virtualHeight = 600;
+    }
     
     this.canvas.width = this.virtualWidth;
     this.canvas.height = this.virtualHeight;
