@@ -1083,8 +1083,14 @@ window.drawChibiCharacter = function(ctx, x, y, animFrame, direction, skin, isMo
     ctx.fillRect(13, 44, 6, 6 + shoeOffset);
     ctx.fillRect(31, 44, 6, 6 - shoeOffset);
 
-    // Draw cute round black Mary Janes
-    ctx.fillStyle = '#111827';
+    // Frill circles peeking out
+    ctx.beginPath();
+    ctx.arc(16, 44, 3, 0, Math.PI * 2);
+    ctx.arc(34, 44, 3, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Draw cute round brown boots
+    ctx.fillStyle = '#854d0e'; // brown leather boots
     ctx.beginPath();
     ctx.arc(16, 50 + shoeOffset, 5.5, 0, Math.PI * 2);
     ctx.arc(34, 50 - shoeOffset, 5.5, 0, Math.PI * 2);
@@ -1160,8 +1166,8 @@ window.drawChibiCharacter = function(ctx, x, y, animFrame, direction, skin, isMo
     ctx.stroke();
   } 
   else {
-    // Default girl (Pink Dress + Sailor Collar + bow tie)
-    ctx.fillStyle = '#ff7597'; // pink base dress
+    // Strawberry-Pink Chibi Girl Outfit: Pastel Blue Dress + Giant Pink Bow + White Apron/Collar
+    ctx.fillStyle = '#a5f3fc'; // soft pastel blue dress
     ctx.beginPath();
     ctx.moveTo(14, 28 + bobbing);
     ctx.lineTo(36, 28 + bobbing);
@@ -1170,33 +1176,32 @@ window.drawChibiCharacter = function(ctx, x, y, animFrame, direction, skin, isMo
     ctx.closePath();
     ctx.fill();
 
-    // White Sailor Collar
+    // White Apron/Bib details
     ctx.fillStyle = '#ffffff';
     ctx.beginPath();
-    ctx.moveTo(16, 28 + bobbing);
-    ctx.lineTo(34, 28 + bobbing);
-    ctx.lineTo(38, 35 + bobbing);
-    ctx.lineTo(25, 34 + bobbing); // V-neck center
-    ctx.lineTo(12, 35 + bobbing);
+    ctx.moveTo(18, 28 + bobbing);
+    ctx.lineTo(32, 28 + bobbing);
+    ctx.lineTo(32, 42 + bobbing);
+    ctx.lineTo(18, 42 + bobbing);
     ctx.closePath();
     ctx.fill();
 
-    // Red Bowtie in V-neck center
-    ctx.fillStyle = '#ef4444';
+    // Giant Pink Bow on the chest
+    ctx.fillStyle = '#ff7597'; // pink loops
     ctx.beginPath();
-    ctx.ellipse(22, 34 + bobbing, 3, 2, Math.PI/4, 0, Math.PI*2);
-    ctx.ellipse(28, 34 + bobbing, 3, 2, -Math.PI/4, 0, Math.PI*2);
+    ctx.ellipse(21, 33 + bobbing, 3.5, 2.5, Math.PI / 4, 0, Math.PI * 2);
+    ctx.ellipse(29, 33 + bobbing, 3.5, 2.5, -Math.PI / 4, 0, Math.PI * 2);
     ctx.fill();
-    ctx.fillStyle = '#fbbf24'; // gold knot center
+    ctx.fillStyle = '#ffffff'; // white center knot
     ctx.beginPath();
-    ctx.arc(25, 34 + bobbing, 1.2, 0, Math.PI*2);
+    ctx.arc(25, 33 + bobbing, 1.2, 0, Math.PI * 2);
     ctx.fill();
 
-    // Sleeves
-    ctx.fillStyle = '#ff4b72'; 
+    // Puffy White Sleeves
+    ctx.fillStyle = '#ffffff'; 
     ctx.beginPath();
-    ctx.arc(9, 32 + bobbing + (shoeOffset * 0.3), 3.8, 0, Math.PI * 2);
-    ctx.arc(41, 32 + bobbing - (shoeOffset * 0.3), 3.8, 0, Math.PI * 2);
+    ctx.arc(9, 31 + bobbing + (shoeOffset * 0.3), 4.5, 0, Math.PI * 2);
+    ctx.arc(41, 31 + bobbing - (shoeOffset * 0.3), 4.5, 0, Math.PI * 2);
     ctx.fill();
   }
 
@@ -1272,71 +1277,65 @@ window.drawChibiCharacter = function(ctx, x, y, animFrame, direction, skin, isMo
     ctx.fill();
   } 
   else {
-    // Girl brown flowing pigtails hair + bows + daisy hairpin
-    ctx.fillStyle = '#451a03'; 
+    // Strawberry-Pink Odango (Double Bun) hair style + gold star hairpin
+    ctx.fillStyle = '#fca5a5'; // pastel pink hair
     const sway = isMoving ? Math.sin(animFrame * 1.5) * 3 : 0;
     
-    // Left ponytail wave
+    // Double Odango buns on top of head
     ctx.beginPath();
-    ctx.moveTo(headX - 15 + sway, headY - 4);
-    ctx.quadraticCurveTo(headX - 25 + sway, headY + 8, headX - 19 + sway, headY + 20);
-    ctx.quadraticCurveTo(headX - 11 + sway, headY + 8, headX - 15 + sway, headY - 4);
+    ctx.arc(headX - 14 + sway, headY - 14, 7, 0, Math.PI * 2);
+    ctx.arc(headX + 14 + sway, headY - 14, 7, 0, Math.PI * 2);
     ctx.fill();
 
-    // Right ponytail wave
-    ctx.beginPath();
-    ctx.moveTo(headX + 15 + sway, headY - 4);
-    ctx.quadraticCurveTo(headX + 25 + sway, headY + 8, headX + 19 + sway, headY + 20);
-    ctx.quadraticCurveTo(headX + 11 + sway, headY + 8, headX + 15 + sway, headY - 4);
-    ctx.fill();
+    // Red Buns ribbons
+    ctx.fillStyle = '#ef4444';
+    ctx.fillRect(headX - 18 + sway, headY - 10, 4, 2);
+    ctx.fillRect(headX + 14 + sway, headY - 10, 4, 2);
 
-    // Hair buns base
+    // Side locks framing face (hanging down and swaying)
+    ctx.fillStyle = '#fca5a5';
     ctx.beginPath();
-    ctx.arc(headX - 15 + sway, headY - 5, 5, 0, Math.PI * 2);
-    ctx.arc(headX + 15 + sway, headY - 5, 5, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Cute pink bows
-    ctx.fillStyle = '#ff4b72';
-    ctx.beginPath();
-    ctx.ellipse(headX - 18 + sway, headY - 5, 3.5, 2, Math.PI / 4, 0, Math.PI * 2);
-    ctx.ellipse(headX - 12 + sway, headY - 5, 3.5, 2, -Math.PI / 4, 0, Math.PI * 2);
-    ctx.ellipse(headX + 12 + sway, headY - 5, 3.5, 2, Math.PI / 4, 0, Math.PI * 2);
-    ctx.ellipse(headX + 18 + sway, headY - 5, 3.5, 2, -Math.PI / 4, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = '#ffffff';
-    ctx.beginPath();
-    ctx.arc(headX - 15 + sway, headY - 5, 1.2, 0, Math.PI * 2);
-    ctx.arc(headX + 15 + sway, headY - 5, 1.2, 0, Math.PI * 2);
+    // left lock
+    ctx.moveTo(headX - 15, headY - 2);
+    ctx.quadraticCurveTo(headX - 20 + sway, headY + 8, headX - 16 + sway, headY + 16);
+    ctx.quadraticCurveTo(headX - 12, headY + 8, headX - 12, headY - 2);
+    // right lock
+    ctx.moveTo(headX + 15, headY - 2);
+    ctx.quadraticCurveTo(headX + 20 + sway, headY + 8, headX + 16 + sway, headY + 16);
+    ctx.quadraticCurveTo(headX + 12, headY + 8, headX + 12, headY - 2);
     ctx.fill();
 
     // Back of hair base & bangs
-    ctx.fillStyle = '#451a03';
     ctx.beginPath();
     ctx.arc(headX, headY - 2, 17, Math.PI, 0, false);
     ctx.fill();
     
+    // Blunt cute anime bangs
     ctx.beginPath();
     ctx.moveTo(headX - 17, headY - 3);
-    ctx.lineTo(headX - 9, headY + 3);
-    ctx.lineTo(headX - 5, headY - 3);
-    ctx.lineTo(headX, headY + 4);
-    ctx.lineTo(headX + 4, headY - 3);
+    ctx.lineTo(headX - 11, headY + 3);
+    ctx.lineTo(headX - 7, headY - 2);
+    ctx.lineTo(headX - 1, headY + 4);
+    ctx.lineTo(headX + 4, headY - 2);
     ctx.lineTo(headX + 10, headY + 3);
     ctx.lineTo(headX + 17, headY - 3);
     ctx.closePath();
     ctx.fill();
 
-    // Daisy hairpin on left side
-    ctx.fillStyle = '#ffffff';
-    for (let a = 0; a < Math.PI * 2; a += Math.PI / 3) {
-      ctx.beginPath();
-      ctx.arc(headX - 9 + Math.cos(a) * 2.5, headY - 7 + Math.sin(a) * 2.5, 1.2, 0, Math.PI * 2);
-      ctx.fill();
-    }
-    ctx.fillStyle = '#fbbf24'; // yellow center
+    // Gold Star Hairpin on the left bangs
+    ctx.fillStyle = '#fbbf24'; // bright gold
     ctx.beginPath();
-    ctx.arc(headX - 9, headY - 7, 1.5, 0, Math.PI * 2);
+    const starX = headX - 9;
+    const starY = headY - 8;
+    ctx.moveTo(starX, starY - 3.5);
+    ctx.lineTo(starX + 1, starY - 1);
+    ctx.lineTo(starX + 3.5, starY);
+    ctx.lineTo(starX + 1, starY + 1);
+    ctx.lineTo(starX, starY + 3.5);
+    ctx.lineTo(starX - 1, starY + 1);
+    ctx.lineTo(starX - 3.5, starY);
+    ctx.lineTo(starX - 1, starY - 1);
+    ctx.closePath();
     ctx.fill();
   }
 
@@ -1370,8 +1369,8 @@ window.drawChibiCharacter = function(ctx, x, y, animFrame, direction, skin, isMo
       ctx.lineTo(headX + 10 + eyeShiftX, headY + 3);
       ctx.stroke();
     } else {
-      // open cute circles
-      ctx.fillStyle = '#1e293b';
+      // open cute circles (violet color for girl skin, dark slate for others)
+      ctx.fillStyle = (skin === 'girl') ? '#8b5cf6' : '#1e293b';
       ctx.beginPath();
       ctx.arc(headX - 7 + eyeShiftX, headY + 2, 2.6, 0, Math.PI * 2);
       ctx.arc(headX + 7 + eyeShiftX, headY + 2, 2.6, 0, Math.PI * 2);
