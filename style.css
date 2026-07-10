@@ -602,12 +602,11 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(8, 4, 18, 0.85);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: rgba(8, 4, 18, 0.93); /* Dark, premium semi-transparent background to avoid layout jitter */
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start; /* Aligns content near the top to prevent shifting when keyboard appears */
+  padding-top: 15vh; /* Standard offset from top */
   z-index: 1000;
   opacity: 0;
   pointer-events: none;
@@ -915,32 +914,190 @@ body {
 /* Mobile Portrait Sizing Enhancements */
 @media (max-width: 480px) {
   #screen-welcome h1 {
-    font-size: 2.8rem !important;
-    margin-bottom: 2.5rem !important;
+    font-size: 1.8rem !important;
+    margin-bottom: 1.5rem !important;
   }
 
   .skin-selector {
-    transform: scale(1.25) !important;
-    margin-bottom: 3.5rem !important;
+    transform: scale(0.95) !important;
+    margin-bottom: 2rem !important;
   }
 
   .btn-premium {
-    font-size: 1.35rem !important;
-    padding: 1.3rem 3.5rem !important;
-    border-radius: 60px !important;
+    font-size: 1.05rem !important;
+    padding: 0.9rem 2.2rem !important;
+    border-radius: 50px !important;
   }
 
-  /* Larger touch targets for mobile thumbs */
-  .joystick-container {
-    width: 120px !important;
-    height: 120px !important;
+  /* HUD Mobile Sizing */
+  .game-hud {
+    top: 15px !important;
+    width: calc(100% - 30px) !important;
+    left: 15px !important;
   }
-  #joystick-base {
-    width: 120px !important;
-    height: 120px !important;
+  .game-score-box {
+    padding: 0.5rem 0.8rem !important;
+    border-radius: 12px !important;
   }
-  #joystick-knob {
-    width: 50px !important;
-    height: 50px !important;
+  .score-text {
+    font-size: 0.9rem !important;
+  }
+  .heart-hud-icon {
+    font-size: 1.15rem !important;
+  }
+  .game-instructions {
+    padding: 0.5rem 0.8rem !important;
+    border-radius: 12px !important;
+    font-size: 0.75rem !important;
+    max-width: 170px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Code Modal Mobile Sizing */
+  .code-content {
+    padding: 2rem 1.5rem !important;
+    width: 92% !important;
+  }
+  .code-title {
+    font-size: 1.45rem !important;
+  }
+  .code-subtitle {
+    font-size: 0.85rem !important;
+    margin-bottom: 1.2rem !important;
+  }
+  #code-input {
+    font-size: 1.3rem !important;
+    padding: 0.75rem 1rem !important;
+    letter-spacing: 3px !important;
+  }
+  .btn-code-submit {
+    font-size: 1.1rem !important;
+    padding: 0.9rem 2rem !important;
+  }
+
+  /* Confession Letter Mobile Sizing */
+  .letter-box {
+    padding: 1.5rem 1.25rem !important;
+    height: 85vh !important;
+    width: 92% !important;
+  }
+  .letter-paper {
+    font-size: 1.45rem !important;
+    line-height: 2.1rem !important;
+  }
+  .letter-actions {
+    flex-direction: column !important;
+    gap: 10px !important;
+    padding-top: 1rem !important;
+    margin-top: 1rem !important;
+  }
+  .btn-choice {
+    padding: 0.8rem 1.5rem !important;
+    font-size: 0.95rem !important;
+    width: 100% !important;
+    text-align: center !important;
+  }
+
+  /* Victory Screen & YAY Screen Mobile Sizing */
+  .victory-title {
+    font-size: 2.2rem !important;
+    letter-spacing: 2px !important;
+  }
+  .victory-subtitle {
+    font-size: 1.15rem !important;
+  }
+  .yay-title {
+    font-size: 3rem !important;
+    letter-spacing: 3px !important;
+  }
+  .yay-subtitle {
+    font-size: 1.25rem !important;
+    margin-bottom: 2rem !important;
+  }
+  .couple-frame {
+    width: 200px !important;
+    height: 200px !important;
+  }
+
+  /* Interactive Envelope Mobile Sizing */
+  .envelope-wrapper {
+    width: 280px !important;
+    height: 190px !important;
+  }
+  .envelope-flap {
+    border-left-width: 140px !important;
+    border-right-width: 140px !important;
+    border-top-width: 100px !important;
+  }
+  .envelope-front {
+    border-left-width: 140px !important;
+    border-right-width: 140px !important;
+    border-bottom-width: 105px !important;
+  }
+  .heart-sticker {
+    top: 75px !important;
+    left: 120px !important;
+  }
+  .envelope-letter {
+    width: 250px !important;
+    height: 160px !important;
+  }
+  .envelope-wrapper.open .envelope-letter {
+    transform: translateY(-130px) scaleY(1.1) !important;
+  }
+}
+
+/* Extra small mobile screen adjustments */
+@media (max-width: 360px) {
+  .game-instructions {
+    display: none !important;
+  }
+  .game-hud {
+    justify-content: center !important;
+  }
+  #screen-welcome h1 {
+    font-size: 1.5rem !important;
+  }
+}
+
+/* Mobile landscape and low height screens (to avoid layout overlap) */
+@media (max-height: 640px) {
+  #screen-welcome h1 {
+    font-size: 1.5rem !important;
+    margin-bottom: 1rem !important;
+  }
+  .skin-selector {
+    transform: scale(0.8) !important;
+    margin-bottom: 1.25rem !important;
+  }
+  .btn-premium {
+    padding: 0.75rem 1.8rem !important;
+    font-size: 0.95rem !important;
+  }
+  .code-content {
+    padding: 1.5rem 1.25rem !important;
+  }
+  .code-title {
+    font-size: 1.3rem !important;
+    margin-bottom: 0.5rem !important;
+  }
+  .code-subtitle {
+    margin-bottom: 1rem !important;
+  }
+  .letter-box {
+    height: 90vh !important;
+    padding: 1rem 1rem !important;
+  }
+  .letter-paper {
+    font-size: 1.3rem !important;
+    line-height: 1.8rem !important;
+  }
+  .envelope-wrapper {
+    transform: scale(0.85);
+  }
+  .envelope-wrapper:hover {
+    transform: scale(0.9) translateY(-5px);
   }
 }
