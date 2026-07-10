@@ -109,6 +109,23 @@
       </div>
     </div>
 
+    <!-- Modal nhập mã code trước khi bắt đầu -->
+    <div id="code-modal" class="code-modal">
+      <div class="code-content">
+        <h2 class="code-title">Nhập Mã Bí Mật 🗝️</h2>
+        <p class="code-subtitle">Nhập mã bí mật của riêng chúng ta để tiếp tục nhé</p>
+        <div class="code-input-wrapper">
+          <input type="password" id="code-input" placeholder="••••••••" maxlength="15" autocomplete="off">
+        </div>
+        <div id="code-error" class="code-error">Mã bí mật không đúng rồi! Vui lòng thử lại ❤️</div>
+        <div class="code-actions">
+          <button id="btn-code-submit" class="btn-premium btn-code-submit">Xác nhận</button>
+          <button id="btn-code-close" class="btn-code-close">Quay lại</button>
+        </div>
+      </div>
+    </div>
+
+
     <!-- Final YAY Screen -->
     <div id="screen-yay" class="screen">
       <div class="yay-content">
@@ -200,24 +217,90 @@
         if (window.effects) window.effects.playTypingSound(); // cute select tick
       });
 
-      // Click Start Button: Zoom effect transition into Mini-game
+      // Code entry modal elements
+      const codeModal = document.getElementById('code-modal');
+      const codeInput = document.getElementById('code-input');
+      const codeError = document.getElementById('code-error');
+      const btnCodeSubmit = document.getElementById('btn-code-submit');
+      const btnCodeClose = document.getElementById('btn-code-close');
+      const codeContent = codeModal.querySelector('.code-content');
+
+      // Click Start Button: Show code prompt modal first
       btnStart.addEventListener('click', () => {
         window.effects.initAudio(); // Initialize audio context on user interaction
-        welcomeScreen.classList.add('camera-zoom-out');
         
+        // Reset input state
+        codeInput.value = '';
+        codeError.style.display = 'none';
+        codeContent.classList.remove('shake');
+        codeInput.style.borderColor = '';
+        codeInput.style.boxShadow = '';
+
+        // Show modal and focus input
+        codeModal.classList.add('active');
         setTimeout(() => {
-          welcomeScreen.classList.remove('active', 'camera-zoom-out');
-          gameScreen.classList.add('active');
+          codeInput.focus();
+        }, 100);
+        if (window.effects) window.effects.playTypingSound();
+      });
+
+      function verifyCode() {
+        const value = codeInput.value.trim();
+        if (value === '10012003') {
+          // Play success chime
+          if (window.effects) window.effects.playCollectSound();
           
-          // Apply chosen skin to the game character
-          if (window.loveGame) {
-            window.loveGame.player.skin = skins[currentSkinIndex].id;
-            window.loveGame.start();
-          }
+          // Hide code modal
+          codeModal.classList.remove('active');
           
-          // Start upbeat game background music
-          window.effects.startGameMusic();
-        }, 1000);
+          // Start camera-zoom-out and transition into game
+          welcomeScreen.classList.add('camera-zoom-out');
+          
+          setTimeout(() => {
+            welcomeScreen.classList.remove('active', 'camera-zoom-out');
+            gameScreen.classList.add('active');
+            
+            // Apply chosen skin to the game character
+            if (window.loveGame) {
+              window.loveGame.player.skin = skins[currentSkinIndex].id;
+              window.loveGame.start();
+            }
+            
+            // Start upbeat game background music
+            window.effects.startGameMusic();
+          }, 1000);
+        } else {
+          // Incorrect code: show error message and trigger feedback
+          codeError.style.display = 'block';
+          if (window.effects) window.effects.playTypingSound();
+          
+          // Trigger shake animation on the modal content
+          codeContent.classList.remove('shake');
+          void codeContent.offsetWidth; // trigger reflow
+          codeContent.classList.add('shake');
+          
+          // Highlight input red briefly
+          codeInput.style.borderColor = 'var(--primary-pink)';
+          codeInput.style.boxShadow = '0 0 15px rgba(255, 75, 114, 0.4)';
+          setTimeout(() => {
+            codeInput.style.borderColor = '';
+            codeInput.style.boxShadow = '';
+          }, 1000);
+        }
+      }
+
+      btnCodeSubmit.addEventListener('click', verifyCode);
+
+      codeInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          verifyCode();
+        }
+      });
+
+      btnCodeClose.addEventListener('click', () => {
+        codeModal.classList.remove('active');
+        if (window.effects) window.effects.playTypingSound();
       });
 
       // Virtual Joystick touch tracking logic
