@@ -132,6 +132,34 @@ class EffectsEngine {
     osc.stop(now + 0.15);
   }
 
+  // 2.5. SOUND: Play character collision/bump sound
+  playCollisionSound() {
+    this.initAudio();
+    if (!this.audioCtx) return;
+
+    if (this.audioCtx.state === 'suspended') {
+      this.audioCtx.resume();
+    }
+
+    const osc = this.audioCtx.createOscillator();
+    const gainNode = this.audioCtx.createGain();
+
+    osc.connect(gainNode);
+    gainNode.connect(this.audioCtx.destination);
+
+    // Cute retro low-frequency bump/boing sound
+    osc.type = 'sine';
+    const now = this.audioCtx.currentTime;
+    osc.frequency.setValueAtTime(180, now);
+    osc.frequency.linearRampToValueAtTime(80, now + 0.15);
+
+    gainNode.gain.setValueAtTime(0.12, now);
+    gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+
+    osc.start(now);
+    osc.stop(now + 0.15);
+  }
+
   // 3. SOUND: Play game victory sound
   playVictorySound() {
     this.initAudio();

@@ -40,7 +40,9 @@ class LoveGame {
       moving: false,
       direction: 'down', // 'down', 'up', 'left', 'right'
       skin: 'girl',      // 'girl', 'boy', 'cat'
-      animFrame: 0
+      animFrame: 0,
+      hitBlinkTimer: 0,
+      slowTimer: 0
     };
 
     this.blinkTimer = 120;
@@ -215,6 +217,9 @@ class LoveGame {
 
   // Spawns a new random running animal agent (cat, dog, bunny, duck)
   spawnRunningAgent() {
+    // Limit maximum active agents to prevent cluttering
+    if (this.runningAgents.length >= 6) return;
+
     const types = ['cat', 'dog', 'bunny', 'duck'];
     const type = types[Math.floor(Math.random() * types.length)];
     
@@ -231,11 +236,30 @@ class LoveGame {
       color = '#fbbf24'; // yellow duck
     }
 
-    const dir = Math.random() > 0.5 ? 1 : -1;
-    const startX = dir === 1 ? -120 : this.virtualWidth + 120;
-    const speed = 0.5 + Math.random() * 0.4;
-    const vx = dir * speed;
-    const startY = 80 + Math.random() * (this.virtualHeight - 160);
+    // Pick a random boundary to spawn
+    const boundary = Math.floor(Math.random() * 4);
+    let startX, startY;
+    if (boundary === 0) { // Left
+      startX = -80;
+      startY = 80 + Math.random() * (this.virtualHeight - 160);
+    } else if (boundary === 1) { // Right
+      startX = this.virtualWidth + 80;
+      startY = 80 + Math.random() * (this.virtualHeight - 160);
+    } else if (boundary === 2) { // Top
+      startX = 40 + Math.random() * (this.virtualWidth - 80);
+      startY = -20;
+    } else { // Bottom
+      startX = 40 + Math.random() * (this.virtualWidth - 80);
+      startY = this.virtualHeight + 80;
+    }
+
+    const speed = 0.2 + Math.random() * 0.2; // Slower speed (0.2 - 0.4)
+    
+    // Angle pointing roughly to the center of the screen
+    const angle = Math.atan2(this.virtualHeight / 2 - startY, this.virtualWidth / 2 - startX) + (Math.random() - 0.5) * 0.5;
+    const vx = Math.cos(angle) * speed;
+    const vy = Math.sin(angle) * speed;
+    const dir = vx >= 0 ? 1 : -1;
 
     const agent = {
       id: Math.random().toString(36).substr(2, 9),
@@ -244,10 +268,14 @@ class LoveGame {
       x: startX,
       y: startY,
       vx: vx,
+      vy: vy,
+      speed: speed,
       dir: dir,
       animTime: Math.random() * 10,
       bubbleText: null,
-      bubbleTimer: 0
+      bubbleTimer: 0,
+      changeDirTimer: 120 + Math.random() * 120,
+      lifetime: 700 + Math.random() * 500
     };
 
     this.runningAgents.push(agent);
@@ -257,9 +285,9 @@ class LoveGame {
       setTimeout(() => {
         if (!this.isPlaying) return;
         
-        const followVx = vx * 0.95;
-        const followX = startX - (dir * 80);
-        const followY = startY + (Math.random() - 0.5) * 30;
+        const followSpeed = speed * 0.95;
+        const followX = startX - (vx * 120 / speed); // behind the leader
+        const followY = startY - (vy * 120 / speed);
 
         const followType = types[Math.floor(Math.random() * types.length)];
         let followColor = '#d1d5db';
@@ -274,12 +302,16 @@ class LoveGame {
           color: followColor,
           x: followX,
           y: followY,
-          vx: followVx,
+          vx: vx * 0.95,
+          vy: vy * 0.95,
+          speed: followSpeed,
           dir: dir,
           animTime: Math.random() * 10,
           bubbleText: null,
           bubbleTimer: 0,
-          pairedId: agent.id
+          pairedId: agent.id,
+          changeDirTimer: 130 + Math.random() * 120,
+          lifetime: 700 + Math.random() * 500
         };
 
         this.runningAgents.push(follower);
@@ -361,33 +393,40 @@ class LoveGame {
   update() {
     if (!this.isPlaying) return;
 
+    // Decrement player hit/slow timers
+    if (this.player.hitBlinkTimer > 0) this.player.hitBlinkTimer--;
+    if (this.player.slowTimer > 0) this.player.slowTimer--;
+
+    const currentSpeed = this.player.slowTimer > 0 ? this.player.speed * 0.5 : this.player.speed;
+
     // 1. Move Player
     this.player.vx = 0;
     this.player.vy = 0;
     this.player.moving = false;
 
     if (this.player.mobileVx !== 0 || this.player.mobileVy !== 0) {
-      this.player.vx = this.player.mobileVx;
-      this.player.vy = this.player.mobileVy;
+      const speedMultiplier = this.player.slowTimer > 0 ? 0.5 : 1.0;
+      this.player.vx = this.player.mobileVx * speedMultiplier;
+      this.player.vy = this.player.mobileVy * speedMultiplier;
       this.player.moving = true;
     } else {
       if (this.keys['w'] || this.keys['arrowup']) {
-        this.player.vy = -this.player.speed;
+        this.player.vy = -currentSpeed;
         this.player.direction = 'up';
         this.player.moving = true;
       }
       if (this.keys['s'] || this.keys['arrowdown']) {
-        this.player.vy = this.player.speed;
+        this.player.vy = currentSpeed;
         this.player.direction = 'down';
         this.player.moving = true;
       }
       if (this.keys['a'] || this.keys['arrowleft']) {
-        this.player.vx = -this.player.speed;
+        this.player.vx = -currentSpeed;
         this.player.direction = 'left';
         this.player.moving = true;
       }
       if (this.keys['d'] || this.keys['arrowright']) {
-        this.player.vx = this.player.speed;
+        this.player.vx = currentSpeed;
         this.player.direction = 'right';
         this.player.moving = true;
       }
@@ -501,17 +540,104 @@ class LoveGame {
 
     for (let i = this.runningAgents.length - 1; i >= 0; i--) {
       const agent = this.runningAgents[i];
+      
+      // Update coordinates
       agent.x += agent.vx;
+      agent.y += (agent.vy || 0);
       agent.animTime += 0.08;
 
-      // Check if off-screen (with margin)
-      if ((agent.dir === 1 && agent.x > this.virtualWidth + 180) || 
-          (agent.dir === -1 && agent.x < -180)) {
-        this.runningAgents.splice(i, 1);
-        continue;
+      // Decrement timers
+      if (agent.changeDirTimer > 0) agent.changeDirTimer--;
+      if (agent.lifetime > 0) agent.lifetime--;
+
+      // Random Walk direction changes
+      if (agent.changeDirTimer <= 0 && agent.lifetime > 0) {
+        agent.changeDirTimer = 120 + Math.random() * 120;
+        const newAngle = Math.random() * Math.PI * 2;
+        agent.vx = Math.cos(newAngle) * agent.speed;
+        agent.vy = Math.sin(newAngle) * agent.speed;
+        agent.dir = agent.vx >= 0 ? 1 : -1;
       }
 
-      // Check player proximity bubble trigger
+      // Boundary bouncing
+      if (agent.lifetime > 0) {
+        // Left & Right bounds
+        if (agent.x < 20) {
+          agent.x = 20;
+          agent.vx = Math.abs(agent.vx); // move right
+          agent.dir = 1;
+        } else if (agent.x > this.virtualWidth - 20) {
+          agent.x = this.virtualWidth - 20;
+          agent.vx = -Math.abs(agent.vx); // move left
+          agent.dir = -1;
+        }
+        // Top & Bottom bounds
+        if (agent.y < 50) { // Below HUD offset
+          agent.y = 50;
+          agent.vy = Math.abs(agent.vy || 0); // move down
+        } else if (agent.y > this.virtualHeight - 30) {
+          agent.y = this.virtualHeight - 30;
+          agent.vy = -Math.abs(agent.vy || 0); // move up
+        }
+      }
+
+      // Check if off-screen (clean up after lifetime expires)
+      if (agent.lifetime <= 0) {
+        if (agent.x < -180 || agent.x > this.virtualWidth + 180 || 
+            agent.y < -100 || agent.y > this.virtualHeight + 100) {
+          this.runningAgents.splice(i, 1);
+          continue;
+        }
+      }
+
+      // Check player collision
+      const pCenterX = this.player.x + pw / 2;
+      const pCenterY = this.player.y + ph - 10;
+      
+      const dx = pCenterX - agent.x;
+      const dy = pCenterY - agent.y;
+      const dist = Math.hypot(dx, dy);
+      const collisionRadius = 25; // collision detection radius
+
+      if (dist < collisionRadius) {
+        // Resolve overlapping immediately (knockback)
+        const pushDist = collisionRadius - dist;
+        const pushX = (dx / (dist || 1)) * pushDist;
+        const pushY = (dy / (dist || 1)) * pushDist;
+
+        this.player.x += pushX * 0.6;
+        this.player.y += pushY * 0.6;
+        agent.x -= pushX * 0.4;
+        agent.y -= pushY * 0.4;
+
+        if (this.player.hitBlinkTimer === 0) {
+          this.player.hitBlinkTimer = 90; // 1.5 seconds invincibility
+          this.player.slowTimer = 90; // 1.5 seconds slow down
+
+          if (this.score > 0) {
+            this.score--;
+            this.updateHUD();
+            this.spawnHeart(); // Respawn a heart somewhere else
+          }
+
+          this.triggerScreenShake();
+          this.triggerHitParticles(agent.x, agent.y);
+
+          if (window.effects && typeof window.effects.playCollisionSound === 'function') {
+            window.effects.playCollisionSound();
+          }
+
+          const agentComplaints = [
+            "Ui da!", "Đụng tui kìa!", "Đi đứng kiểu gì thế!", 
+            "Ơ kìa!", "Lạng lách quá nhen!", "Né tui ra!", 
+            "Ui chao!", "Ui da đau nha!", "Hù hồn à!"
+          ];
+          agent.bubbleText = agentComplaints[Math.floor(Math.random() * agentComplaints.length)];
+          agent.bubbleTimer = 180;
+        }
+      }
+
+      // Check player proximity bubble trigger (only if not collided/not currently showing a bubble)
       const distToPlayer = Math.hypot((this.player.x + pw/2) - agent.x, (this.player.y + ph/2) - agent.y);
       if (distToPlayer < 75 && agent.bubbleText === null) {
         agent.bubbleText = this.getRandomPhrase();
@@ -574,6 +700,39 @@ class LoveGame {
         life: 1.0,
         decay: 0.02 + Math.random() * 0.02
       });
+    }
+  }
+
+  // Create hit dust particles on collision
+  triggerHitParticles(x, y) {
+    const colors = ['#9ca3af', '#6b7280', '#ef4444', '#f87171'];
+    for (let i = 0; i < 12; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const speed = 0.5 + Math.random() * 2.5;
+      this.particles.push({
+        x: x,
+        y: y,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        life: 1.0,
+        decay: 0.03 + Math.random() * 0.03
+      });
+    }
+  }
+
+  // Helper method to shake screen when player is hit or wins
+  triggerScreenShake() {
+    const gameScreen = document.getElementById('screen-game');
+    if (gameScreen) {
+      // Remove first if already shaking to restart animation
+      gameScreen.classList.remove('shake-screen');
+      // Trigger reflow to restart CSS animation
+      void gameScreen.offsetWidth;
+      gameScreen.classList.add('shake-screen');
+      setTimeout(() => {
+        gameScreen.classList.remove('shake-screen');
+      }, 400);
     }
   }
 
@@ -692,6 +851,10 @@ class LoveGame {
     }
 
     // 5. Draw Player Character
+    const originalAlpha = this.ctx.globalAlpha;
+    if (this.player.hitBlinkTimer > 0 && Math.floor(Date.now() / 100) % 2 === 0) {
+      this.ctx.globalAlpha = 0.35;
+    }
     if (this.assets.playerLoaded) {
       this.ctx.drawImage(this.assets.player, this.player.x, this.player.y, this.player.width, this.player.height);
     } else {
@@ -700,6 +863,7 @@ class LoveGame {
         window.drawChibiCharacter(this.ctx, this.player.x, this.player.y, this.player.animFrame, this.player.direction, this.player.skin, this.player.moving, this.isBlinking);
       }
     }
+    this.ctx.globalAlpha = originalAlpha;
 
     // 6. Draw Clouds (Layer: above ground entities)
     this.ctx.fillStyle = 'rgba(255, 255, 255, 0.08)';

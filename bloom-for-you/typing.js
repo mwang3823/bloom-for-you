@@ -11,10 +11,10 @@ class LetterTyping {
 {delay:40}Hong biết lúc Pthuy đọc tới đây thì... {pause:300}Pthuy nhận được hoa của Mwang chưa he? 🌷{pause:600}
 {delay:40}Còn quán này nữa... {pause:300}Pthuy thấy shaooo? {pause:300}lựa lâu lắm á ní. 😉{pause:1000}
 
-{delay:50}Thật ra... {pause:400}Mwang chuẩn bị cho ngày hôm nay hơn một tháng trước.{pause:900} Tại có nói mấp mé mấy lần mà cổ từ chối á chớ.{pause:600}
+{delay:50}Thật ra... {pause:400}Mwang chuẩn bị cho ngày hôm nay hơn một tháng trước.{pause:900} Tại có nói mấp mé mấy lần mà cổ từ chối 🫪.{pause:600}
 {delay:50}Phải kể từ đêm tụi mình đi chơi xuyên đêm, {pause:300}ngồi nói với nhau đủ thứ chuyện trên đời, {pause:200}rồi deeptalk quên thời gian luôn...{pause:900}
 {delay:55}Từ lúc đó, {pause:200}Mwang nghĩ...{pause:500}
-{delay:50}"Yarsssss, kiểu này hong tỏ tình thì chạy đi đâu nữa."{pause:1000}
+{delay:50}"Chetme, Mwang dính pẫy roiii 🫪"{pause:1000}
 
 {delay:45}Rồi từ lúc đó, {pause:200}Mwang âm thầm chuẩn bị từng chút.{pause:600}
 {delay:45}Muốn chọn một ngày trời đẹp, {pause:300}một bó hoa thật xinh, {pause:300}một quán ăn bíu ti phun...{pause:500}
@@ -23,11 +23,11 @@ class LetterTyping {
 {delay:55}Pthuy xinh thì khỏi nói rồi...{pause:500}
 {delay:55}Nhưng cái làm Mwang rung động, {pause:200}là con người của Pthuy.{pause:900}
 {delay:55}Dịu dàng, {pause:150}tinh tế, {pause:150}cách Pthuy quan tâm người khác một cách rất tự nhiên... {pause:200}
-{delay:50}Nhiu đó thoi mà tui thích pà đó.{pause:1100}
+{delay:50}Nhiu đó thoi mà tui đổ pà đó {pause:1100}
 
 {delay:50}Mà nói thiệt...{pause:300}
 {delay:50}Hong biết lúc ngồi với nhau, {pause:200}Mwang có tỏ tình mượt hong nữa.{pause:900}
-{delay:45}T nghi t cứng họng luôn quá. {pause:200}
+{delay:45}T nghi t cứng họng luôn quá. ☺️{pause:200}
 
 {delay:60}Nhưng có một điều chắc chắn là...{pause:800}
 
@@ -37,9 +37,9 @@ class LetterTyping {
 
 {delay:80}Nên là...{pause:600}
 
-{delay:85}Pthuy cho Mwang một cơ hội làm người yêu Pthuy nhá? 🤍{pause:1400}
+{delay:85}Pthuy cho Mwang cơ hội làm người yêu Pthuy nhá? 🤍{pause:1400}
 
-{delay:55}Nếu đồng ý, {pause:200}thì từ nay, {pause:200}chúng mình chính thức là chúng mình. ❤️`;
+{delay:55}Nếu đồng ý, {pause:200}thì từ nay, {pause:200}chúng mình chính thức là chúng mình ❤️`;
 
 
     // Strip out all tags to create the clean plain-text version for quick display/scroll calculations
